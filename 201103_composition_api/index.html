@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3 CompositionAPI 超入門</title>
+</head>
+
+<body>
+  <!-- Vue App -->
+  <div id="app">
+    <h1>{{msg}}</h1>
+    <button @click="handAddInt">Add</button>
+    <!-- 重點 -->
+    <h2>Vue3 CompositionAPI 好處</h2>
+    <ul>
+      <li>去掉了 this 指向的麻煩，更好入門</li>
+      <li>用 setup 的方使取代 vue2 data 資料，並使用 return 返回雙向綁定，減少不必要的綁定</li>
+      <li>值的變動要加上 .value </li>
+      <li>要特別注意的是，設定變數，內容前需要加 ref()</li>
+    </ul>
+  </div>
+
+  <!-- script -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // 宣告 Vue *V要大寫
+    const { ref } = Vue
+    // 宣告 App
+    const App = {
+      // vue3 改用 setup 的方式來定義 vue2 的 data，使資料更直觀
+      setup() {
+        // !設定變數，內容前需要加ref()
+        const msg = ref(0)
+
+        // 這裡不用包進 app 裡，所以不用 return 回去
+        let timer = null
+        timer = setInterval(() => {
+        }, 1000)
+
+        // clg(msg)會被包在 Vue app 裡
+        console.log(msg)
+        // 在 CompositionAPI 方式下，要加上 .value 點擊才會產生作用
+        const handAddInt = () => msg.value++
+
+        // 返回畫面
+        return {
+          msg,
+          handAddInt
+        }
+      }
+
+    }
+    // 建立 Vue App
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>

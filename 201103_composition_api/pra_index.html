@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Vue3 CompositionAPI</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>{{msg}}</h1>
+    <!-- TODO "文字"同步輸入也未成功 -->
+    <input type="text" :placeholder="count">
+    <p>測試：{{count}}</p>
+    <button @click="next">下一步</button>
+    <hr>
+    <h3>有問題待解決！</h3>
+    <ul>
+      <ol>1."文字"同步問題</ol>
+      <ol>2.條件式問題，到底是否需加ref()?</ol>
+    </ul>
+  </div>
+
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // 第一步：V 要大寫唷!
+    const { ref } = Vue
+    // 第二步
+    const App = {
+      setup() {
+        // 第四部 (內容)
+        let count = ref(1)
+        let msg = ref('第一步：CDN + 建立 Vue')
+        const next = () => {
+          count.value++
+
+          // TODO 目前無法成功轉換條件
+          // if (count == 2) {
+          //   msg = ref('第二步：123')
+          // }
+        }
+        console.log(count)
+
+        // 第五步（返回綁定）
+        return {
+          count,
+          msg,
+          next
+        }
+      }
+    }
+
+    // 第三步
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
