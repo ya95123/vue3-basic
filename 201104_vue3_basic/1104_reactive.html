@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reactive 裡面只接受物件和陣列</title>
+  <style>
+    body {
+      font-family: '微軟正黑體';
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h2>reactive 重點</h2>
+    <p>1.裡面只接受物件 (JSON) 和陣列 (Array)</p>
+    <p>2.ref 是所有類別都可以放</p>
+    <h2>選擇 ref? 還是 reactive?</h2>
+    <p>ref( ) : 可以接受任何型態的資料，但是不會對物件或陣列內部的屬性變動做監聽。</p>
+    <p>reactive( ) : 只能接受物件或陣列，可以做深層的監聽，以及訪問資料不需要 .value。</p>
+    <h3>所以，要定義 JSON { } 或 Array [ ] 時用 reactive，其餘使用 ref。
+    </h3>
+    <hr>
+    <h1 style="color:#EB5761;">{{message.text}}</h1>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { reactive } = Vue
+    const App = {
+      setup() {
+        const message = reactive({ text: "Alfred" })
+        return {
+          message
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
