@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3 + Swiper</title>
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <!-- Demo styles -->
+  <style>
+    html,
+    body {
+      position: relative;
+      /* height: 100%; */
+    }
+
+    body {
+      background: #F7D56399;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+      margin: 2rem;
+      padding: 0;
+    }
+
+    .swiper-container {
+      width: 600px;
+      height: 450px;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+
+      /* Center slide text vertically */
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 圖片api：https://run.mocky.io/v3/fe4354a8-0cfb-4de0-9a39-8a2504f996cf -->
+  <div id="app">
+    <!-- 如何使用 Swiper -->
+    <h3>步驟解釋</h3>
+    <p>第一步：建立Vue3</p>
+    <p>第二步：加入Swpier CSS CDN、JS CDN</p>
+    <p>第三步：選定一個 Swiper DEMO，複製 DOM、CSS 貼上</p>
+    <p>第四步：Vue 要宣告呼叫 onMouted，因為 Swiper 需要等待 DOM 渲染完</p>
+    <p>第五步：複製 JS 貼上</p>
+    <p>第六步：調整 #app 寬高或CSS，讓 Swiper 有寬高</p>
+    <p>第七步：增加 axios CDN，串接圖片 API</p>
+    <p>第八步：宣告 imgArr = res.data 回來的資料，並 return</p>
+    <p>第九步：將 .swiper-slide DOM 刪掉剩一個，改用 v-for 去跑 imgArr</p>
+    <p>第十步：v-for 的 :key 記得綁定，內容的 img :src 同樣綁定</p>
+    <p>第11步：因為圖片需等候 api 時間，Swiper 已經先跑完了，所以可以利用 vue 的 watch 監聽方法，去做內容的更新</p>
+    <p>第12步：調整 Swiper JS 寫法，var去掉，在上面用 let 宣告 swiper = null</p>
+    <p>第13步：watch 裡加上 swiper.update()，此為 Swiper 提供 API 更新時的寫法</p>
+    <p>第14步：watch 裡加上 nextTick 確保所有 DOM 跑完( 等待v-for )之後執行，並將 swiper.update() 移至裡面</p>
+
+
+    <!-- Swiper -->
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" v-for="item in imgArr" :key="item.src">
+          <img :src="item.src" alt="">
+        </div>
+      </div>
+      <!-- Add Pagination -->
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+
+  <!-- axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- !Swiper JS：使用之前需先讓 DOM 渲染完畢 -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <!-- Vue3 -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    console.log(Vue)
+    // 宣告呼叫 onMounted...
+    const { ref, onMounted, watch, nextTick } = Vue
+    const App = {
+      setup() {
+        // imgArr 這樣寫代表已經被 Vue 綁定起來
+        const imgArr = ref([])
+        // 宣告 swiper
+        let swiper = null
+
+        // 監聽
+        watch(imgArr, (newVal) => {
+          // nextTick 是在所有動元素跑完之後才會執行
+          nextTick(() => {
+            // update 是 Swiper 提供的內容更新寫法，在 API 裡
+            swiper.update()
+          })
+        })
+
+        // DOM 渲染完後執行
+        onMounted(() => {
+          axios.get('https://run.mocky.io/v3/fe4354a8-0cfb-4de0-9a39-8a2504f996cf')
+            .then((res) => {
+              // 讓 imgArr = res 回來的資料
+              imgArr.value = res.data
+            })
+          // Initialize Swiper
+          swiper = new Swiper('.swiper-container', {
+            pagination: {
+              el: '.swiper-pagination',
+            },
+          })
+        })
+        return {
+          imgArr
+        }
+      }
+    }
+
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
