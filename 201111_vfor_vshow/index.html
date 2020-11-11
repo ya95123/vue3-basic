@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v-for v-show</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>水果盤</h1>
+    <p>備註：v-show，是利用 CSS display:none;、display:block; 去控制調整出現或隱藏。</p>
+    <button @click="delBanana">今天不想吃香蕉，香蕉下次見</button>
+    <ul>
+      <ol v-for="(item,idx) in fruit" v-show="item.show">{{idx+1}}｜{{item.name}}</ol>
+    </ul>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { reactive } = Vue
+    const App = {
+      setup() {
+        const fruit = reactive([
+          { name: "蘋果", show: true },
+          { name: "水梨", show: true },
+          { name: "香蕉", show: true },
+          { name: "草莓", show: true },
+          { name: "芭樂", show: true },
+        ])
+        const delBanana = () => {
+          for (let item of fruit) {
+            if (item.name.includes("香蕉")) {
+              item.show = false
+              console.log("我把香蕉藏起來了");
+            }
+          }
+        }
+        return {
+          fruit,
+          delBanana
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
