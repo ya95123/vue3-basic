@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>{{num}}</h1>
+    <h2>{{numData.idx}}</h2>
+    <button @click="AddFn">Add</button>
+    <button @click="RemoveFn">Remove</button>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref, reactive } = Vue
+    const App = {
+      setup() {
+        const num = ref(0)
+        const numData = reactive({ idx: 0 })
+        const AddFn = () => {
+          // ! ref 要記得 .value
+          num.value++
+          numData.idx++
+        }
+        const RemoveFn = () => {
+          num.value--
+          numData.idx--
+        }
+        return {
+          num,
+          AddFn,
+          numData,
+          RemoveFn
+        }
+      }
+    }
+
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
