@@ -4,41 +4,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>v-for v-show</title>
+  <title>v-show v-if v-for</title>
 </head>
 
 <body>
   <div id="app">
     <h1>水果盤</h1>
-    <p>備註：v-show，是利用 CSS display:none;、display:block; 去控制調整出現或隱藏。</p>
+    <h3>v-show、v-if</h3>
+    <p>1. v-show，是利用 CSS display:none;、display:block; 去控制調整出現或隱藏。</p>
+    <p>2. v-if，是用刪除或增加 DOM 的方式，但耗能較高，適用於權限控制、一開始不出現在畫面上時。
+    </p>
+    <p>3. v-if 好像不能綁陣列或物件裡的值，會報錯出現 undefined。</p>
+    <span style="background: #f969;">
+      渲染上狀況：<br>
+      v-show 渲染完再加上 display:none/block;<br>
+      v-if 若是關閉狀態，不會被渲染
+    </span>
+
+    <h3>v-for</h3>
+    <p>1. v-for，建議一定要用 key 綁定，這樣更改值時，才不會重新渲染全部，而是根據該項去做更動。</p>
+    <p>2. :key 要選定唯一值做綁定，並且不要拿索引值 idx 當 key，因為當陣列變動順序時，可能會出問題。</p>
     <button @click="delBanana">今天不想吃香蕉，香蕉下次見</button>
     <ul>
-      <ol v-for="(item,idx) in fruit" v-show="item.show">{{idx+1}}｜{{item.name}}</ol>
+      <ol v-for="(item,idx) in fruit" :key="item.name" v-show="item.show">{{idx+1}}｜{{item.name}}</ol>
+      <br>
+      <!-- !v-if 好像不能綁陣列或物件裡的值 -->
+      <ol v-for="(item,idx) in fruit" :key="item.name" v-if="vIf">{{idx+1}}｜{{item.name}}</ol>
     </ul>
   </div>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { reactive } = Vue
+    const { ref, reactive } = Vue
     const App = {
       setup() {
         const fruit = reactive([
-          { name: "蘋果", show: true },
-          { name: "水梨", show: true },
-          { name: "香蕉", show: true },
-          { name: "草莓", show: true },
-          { name: "芭樂", show: true },
+          // !v-if 綁這裡的值會報錯，出現 undefined
+          { name: "蘋果", show: true, if: true },
+          { name: "水梨", show: true, if: true },
+          { name: "香蕉", show: true, if: true },
+          { name: "草莓", show: true, if: true },
+          { name: "芭樂", show: true, if: true },
         ])
         const delBanana = () => {
           for (let item of fruit) {
             if (item.name.includes("香蕉")) {
               item.show = false
               console.log("我把香蕉藏起來了");
+              vIf.value = !vIf.value
+              console.log("v-if開關");
             }
           }
         }
+        let vIf = ref(true)
         return {
           fruit,
-          delBanana
+          delBanana,
+          vIf
         }
       }
     }
