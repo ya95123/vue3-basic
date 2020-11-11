@@ -90,11 +90,8 @@
           isOpen.value = !isOpen.value
         }
         const domH = computed(() => {
-          if (isOpen.value) {
-            return `${listArr.length * 40}px`
-            // return 後，函數就只執行到這裡 
-          }
-          return 0
+          return isOpen.value ? `${listArr.length * 40}px` : 0
+          // return 後，函數就只執行到這裡 
         })
         return {
           isOpen,
