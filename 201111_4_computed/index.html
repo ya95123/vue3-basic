@@ -69,7 +69,13 @@
     <a @click="HandListShow" class="title">狼人殺玩家</a>
     <!-- <ul class="box" :style="{height: domFn()}"> -->
     <ul class="box" :style="{height: domH}">
-      <li v-for="(list, idx) in listArr" :key="list">{{list.name}}</li>
+      <li v-for="(list, idx) in listArr" :key="list">
+        {{list.name}} $:{{list.money}}
+      </li>
+      <!-- *利用 computed 組串資料產生 newArr -->
+      <!-- <li v-for="(list, idx) in newArr" :key="list">
+        {{list.identity}}
+      </li> -->
     </ul>
   </div>
   <script src="https://unpkg.com/vue@next"></script>
@@ -95,6 +101,14 @@
           return isOpen.value ? `${listArr.length * 40}px` : 0
           // return 後，函數就只執行到這裡 
         })
+        // 組串資料
+        const newArr = computed(() => {
+          let map = listArr.map((item) => {
+            return { identity: `${item.name} $:${item.money}` }
+          })
+          console.log(map)
+          return map
+        })
 
         // methods
         const domFn = () => {
@@ -105,7 +119,8 @@
           listArr,
           HandListShow,
           domH,
-          domFn
+          domFn,
+          newArr
         }
       }
     }
