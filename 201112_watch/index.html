@@ -12,15 +12,23 @@
     <h1>監控 watch</h1>
     <p>1.獲取參數可設一值(新值)，二值(新值,舊值)，或不取。</p>
     <p>2.監控 ref：直接寫上監控之變數。</p>
-    <p>3.監控 reactive：物件裡的單一值需用 return 方式監控變數，
-      <span style="background:#f969">()=> 監控變數</span>。<br>
+    <p>3.監控 reactive：物件裡的單一值需用 return 方式監控，
+      <span style="background:#f969">()=> 監控值</span>。變數可直接監控。<br>
       例如：
     <pre style="background: #9993;">
+      const data = reactive({ idx: 5 })
+      // 監控 reactive 單一值
       watch(() => data.idx, (newidx, oldidx) => {
+        console.log(`reactive：new:${newidx},old:${oldidx}`);
+      })
+      
+      // 監控 reactive 變數
+      watch(data, (newidx, oldidx) => {
         console.log(`reactive：new:${newidx},old:${oldidx}`);
       })
       </pre>
     </p>
+    <p>4.深度監控：連 ref 裡的物件值都可以監控，是每一筆資料都做監控，耗能大。</p>
   </div>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
@@ -29,6 +37,7 @@
       setup() {
         const idx = ref(0)
         const data = reactive({ idx: 5 })
+        const dataDeep = ref({ user: {} })
 
         let round = setInterval(() => {
           idx.value++
@@ -37,8 +46,9 @@
 
         setTimeout(() => {
           clearInterval(round)
-          console.log('5秒到')
-        }, 5000)
+          console.log('2秒到')
+          dataDeep.value.user["name"] = "mike"
+        }, 2000)
 
         // ---watch(監控的值,(新值,舊值)=>{ callback執行函數 })
         // 監控 ref
@@ -49,6 +59,14 @@
         watch(() => data.idx, (newidx, oldidx) => {
           console.log(`reactive：new:${newidx},old:${oldidx}`);
         })
+        // 深度監控(監控對象每一筆資料都會做掃描，對 ref 包物件也有效，但耗能大)
+        watch(dataDeep, (newVal) => {
+          console.log(newVal)
+          console.log(newVal.user)
+        },
+          { deep: true }
+        )
+
         return {
 
         }
