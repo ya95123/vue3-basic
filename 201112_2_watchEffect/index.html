@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>watch Effect</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>watchEffect</h1>
+    <p>1.在進入網頁初始化的時候，就先做一次監控 callback。</p>
+    <p>2.觸發點 → 寫在 watchEffect 裡的初始化時，都會被觸發。裡面其中有一項值被更動時，函式裡所有項目會一起被觸發。</p>
+    <p>3.沒有帶參數。</p>
+    <p>4.watchEffect 呼叫自己可以被關閉。</p>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref, reactive, watch, watchEffect } = Vue
+    const App = {
+      setup() {
+        const num = ref(0)
+        const numData = reactive({ idx: 0 })
+        let timer = setInterval(() => {
+          num.value++
+          numData.idx++
+        }, 1000);
+
+        // watchEffect---
+        const stop = watchEffect(() => {
+          console.log(num.value)
+          console.log(`Data：${numData.idx}`)
+          if (num.value >= 4) {
+            console.log(`watchEffect關閉，但是setInterval還會繼續唷！\n除非也在這條件式 clearInterval`);
+            // !呼叫自己會關閉 watchEffect
+            stop()
+          }
+        })
+        // watch timer
+        watch(num, (newVal) => {
+          console.log(`setInterval 跑動中 ~`);
+          if (newVal >= 8) {
+            console.log('timer清除，但 watch 沒關閉')
+            clearInterval(timer)
+          }
+        })
+
+        return {
+
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
