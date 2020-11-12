@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch 監控</title>
+</head>
+
+<body>
+  <div id="app">
+
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref, watch } = Vue
+    const App = {
+      setup() {
+        const idx = ref(0)
+
+        let round = setInterval(() => {
+          idx.value++
+        }, 1000)
+
+        setTimeout(() => {
+          clearInterval(round)
+          console.log('5秒到')
+        }, 5000)
+
+        // ---watch(監控的值,(新值,舊值)=>{ callback執行函數 })
+        watch(idx, (newidx, oldidx) => {
+          console.log(`new:${newidx},old:${oldidx}`);
+        })
+
+        return {
+
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
