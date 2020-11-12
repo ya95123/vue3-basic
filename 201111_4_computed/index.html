@@ -67,16 +67,27 @@
 <body>
   <div id="app">
     <a @click="HandListShow" class="title">狼人殺玩家</a>
+    <!-- *利用 methods 計算高度 -->
     <!-- <ul class="box" :style="{height: domFn()}"> -->
-    <ul class="box" :style="{height: domH}">
-      <li v-for="(list, idx) in listArr" :key="list">
+    <!-- *利用 computed 計算高度 -->
+    <!-- <ul class="box" :style="{height: domH}">
+      <li v-for="(list, idx) in listArr" :key="list.name">
         {{list.name}} $:{{list.money}}
       </li>
-      <!-- *利用 computed 組串資料產生 newArr -->
-      <!-- <li v-for="(list, idx) in newArr" :key="list">
+    </ul> -->
+    <!-- *利用 computed 組串文字資料產生 newArr -->
+    <!-- <ul class="box" :style="{height: domH}">
+      <li v-for="(list, idx) in newArr" :key="list.name">
         {{list.identity}}
-      </li> -->
+      </li>
+    </ul> -->
+    <!-- *利用 computed 先做資料篩選 filter 產生 filterData，並做篩選後的高度調整 boxHeight -->
+    <ul class="box" :style="{height: boxHeight}">
+      <li v-for="(list, idx) in filterData" :key="list.name">
+        {{list.name}} $:{{list.money}}
+      </li>
     </ul>
+
   </div>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
@@ -96,7 +107,8 @@
         const HandListShow = () => {
           isOpen.value = !isOpen.value
         }
-        // computed
+        // ---computed
+        // 計算 box 高度
         const domH = computed(() => {
           return isOpen.value ? `${listArr.length * 40}px` : 0
           // return 後，函數就只執行到這裡 
@@ -109,8 +121,19 @@
           console.log(map)
           return map
         })
+        // filter 資料篩選
+        const filterData = computed(() => {
+          const filter = listArr.filter((item) => item.money >= 500)
+          console.log(filter);
+          return filter
+        })
+        // 處理資料篩選後的高度
+        const boxHeight = computed(() => {
+          // !被 computed 處理過的資料，再次處理時就需要使用到 value 取值，如同 ref 狀態
+          return isOpen.value ? `${filterData.value.length * 40}px` : 0
+        })
 
-        // methods
+        // ---methods
         const domFn = () => {
           return isOpen.value ? `${listArr.length * 40}px` : 0
         }
@@ -120,7 +143,9 @@
           HandListShow,
           domH,
           domFn,
-          newArr
+          newArr,
+          filterData,
+          boxHeight
         }
       }
     }
