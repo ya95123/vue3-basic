@@ -9,17 +9,30 @@
 
 <body>
   <div id="app">
-
+    <h1>監控 watch</h1>
+    <p>1.獲取參數可設一值(新值)，或二值(新值,舊值)。</p>
+    <p>2.監控 ref：直接寫上監控之變數。</p>
+    <p>3.監控 reactive：需用 return 方式監控變數，
+      <span style="background:#f969">()=> 監控變數</span>。<br>
+      例如：
+    <pre style="background: #9993;">
+      watch(() => data.idx, (newidx, oldidx) => {
+        console.log(`reactive：new:${newidx},old:${oldidx}`);
+      })
+    </pre>
+    </p>
   </div>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { ref, watch } = Vue
+    const { ref, reactive, watch } = Vue
     const App = {
       setup() {
         const idx = ref(0)
+        const data = reactive({ idx: 5 })
 
         let round = setInterval(() => {
           idx.value++
+          data.idx--
         }, 1000)
 
         setTimeout(() => {
@@ -28,10 +41,14 @@
         }, 5000)
 
         // ---watch(監控的值,(新值,舊值)=>{ callback執行函數 })
+        // 監控 ref
         watch(idx, (newidx, oldidx) => {
-          console.log(`new:${newidx},old:${oldidx}`);
+          console.log(`ref：new:${newidx},old:${oldidx}`);
         })
-
+        // 監控reactive
+        watch(() => data.idx, (newidx, oldidx) => {
+          console.log(`reactive：new:${newidx},old:${oldidx}`);
+        })
         return {
 
         }
