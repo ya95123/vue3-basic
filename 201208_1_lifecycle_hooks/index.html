@@ -1,25 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>常用的 Lifecycle Hooks 生命週期</title>
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <h1>{{idx}}</h1>
+    <button @click="plus">+1</button>
+  </div>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { } = Vue
+    // 常見 vue lifecycle：onBeforeMount -> onMounted -> onUpdated
+    // onBeforeMount, onMounted，只會執行一次而已
+    const { ref, onBeforeMount, onMounted, onUpdated } = Vue
     const App = {
       setup() {
-        return {
+        // setup
+        console.log('當 vue 掛載到 app 上面後執行')
 
+        const idx = ref(0)
+        setTimeout(() => {
+          idx.value = 1
+          console.log(idx.value)
+        }, 3000)
+
+        const plus = () => {
+          idx.value++
+        }
+
+        onBeforeMount(() => {
+          console.log('DOM 渲染前')
+        })
+
+        onMounted(() => {
+          console.log('DOM 渲染完成後')
+        })
+
+        onUpdated(() => {
+          // 在資料更改導致 virtual DOM 重新渲染後調用
+          console.log('DOM 資料更改後')
+        })
+
+        return {
+          idx,
+          plus
         }
       }
     }
-    vue.createApp(App).mount("#app")
+    Vue.createApp(App).mount("#app")
   </script>
 </body>
 
