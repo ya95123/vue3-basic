@@ -51,19 +51,17 @@
 
 <body>
   <div id="app">
-    <div v-if="isLoad" class="box">
+    <div class="box" v-if="isLoad">
       <div>
         <img v-for="(item,i) in imgArr.arr" v-show="imgIdx === i" :key="item.url" :src="item.url" class="img">
       </div>
-      <div v-if="isLoad" class="btnbox">
+      <div class="btnbox" v-if="isLoad">
         <a @click="imgRemove" href="javascript:;">上一張</a>
         <a @click="imgAdd" href="javascript:;">下一張</a>
       </div>
     </div>
-
+    <img class="load" v-if="!isLoad" src="./load.gif">
   </div>
-  <img src="https://picsum.photos/300/300/?random=1">
-  <img v-if="!isLoad" class="load" src=".load.gif">
 
   <script src="//unpkg.com/vue@next"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -75,6 +73,7 @@
         const imgIdx = ref(0)
         const isLoad = ref(false)
 
+        // 下一張
         const imgAdd = () => {
           imgIdx.value++
           if (imgIdx.value > imgArr.arr.length - 1) {
@@ -83,6 +82,7 @@
           console.log(imgIdx.value)
         }
 
+        // 上一張
         const imgRemove = () => {
           imgIdx.value--
           if (imgIdx.value < 0) {
@@ -91,10 +91,35 @@
           console.log(imgIdx.value)
         }
 
+        // 判斷所有圖片是否載入完成
+        // newImgArr 為接收到的 res.data
+        const handImgLoad = (newImgArr) => {
+          let i = 0
+          // forEach 裡的 image 為 newImgArr 裡每個 key
+          newImgArr.forEach(image => {
+            // 宣告 item 為 Image 物件
+            const item = new Image()
+            item.src = image.url
+            // onload 載入後事件
+            item.onload = () => {
+              i++
+              if (newImgArr.length === i) {
+                console.log('load ok');
+                imgArr.arr = newImgArr
+                isLoad.value = true
+              }
+            }
+          })
+        }
+
         // 建議渲染完 DOM 再做串接 API
         onMounted(() => {
           axios.get('https://vue-lessons-api.herokuapp.com/photo/list').then(res => {
-            imgArr.arr = res.data
+            // 加上 load.gif 寫法 ↓
+            // handImgLoad(參數傳遞到 function 裡)
+            handImgLoad(res.data)
+            // 未需使用 load.gif 寫法 ↓
+            // imgArr.arr = res.data
             console.log(res.data)
           })
         })
@@ -104,7 +129,8 @@
           imgIdx,
           isLoad,
           imgAdd,
-          imgRemove
+          imgRemove,
+          handImgLoad
         }
       }
     }
