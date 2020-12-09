@@ -5,17 +5,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>注入 HTML</title>
+  <style>
+    .content {
+      width: 500px;
+      margin: 0 auto;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <!-- v-html 透過 html 字串渲染 -->
+    <!-- v-html 相等於 js 裡的 innerHtml 所以要確保裡面沒有 js function 可被執行 -->
+    <div class="content" v-html="data"></div>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
   <script src="//unpkg.com/vue@next"></script>
   <script>
-    const { } = Vue
+    const { onMounted, ref } = Vue
     const App = {
       setup() {
-        return {
+        const data = ref('')
 
+        onMounted(() => {
+          axios.get('https://vue-lessons-api.herokuapp.com/dom/content').then(res => {
+            data.value = res.data.html
+            // res.data 裡的 html 為字串
+            console.log(res.data)
+          })
+        })
+        return {
+          data
         }
       }
     }
