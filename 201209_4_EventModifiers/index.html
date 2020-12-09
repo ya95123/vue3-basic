@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事件修飾符 EventModifiers</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: #233245;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "微軟正黑體";
+    }
+
+    img {
+      display: block;
+    }
+
+    .card {
+      cursor: pointer;
+      display: block;
+      width: 232px;
+      overflow: hidden;
+      background-color: #f6f6f6;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px #121c29;
+      border: 2px solid #121c29;
+      text-decoration: none;
+      color: #121c29;
+    }
+
+    .card img {
+      width: 100%;
+    }
+
+    .card>.text-box {
+      width: 100%;
+      padding: 10px 16px 16px 16px;
+    }
+
+    .card>.text-box>p {
+      font-size: 20px;
+    }
+
+    .card>.img-box {
+      position: relative;
+    }
+
+    .card>.img-box>.info {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 5px 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <a class="card" href="#" @click.prevent="gotoCourseListPage">
+      <div class="img-box">
+        <img src="./courses.jpg">
+        <p class="info" @click.prevent.stop="gotoInfoPage">課程資訊</p>
+      </div>
+      <div class="text-box">
+        <p>2020 Vue3 專業職人 | 入門篇 (預購中)</p>
+      </div>
+    </a>
+  </div>
+  <script src="//unpkg.com/vue@next"></script>
+  <script>
+    const App = {
+      setup() {
+        const gotoInfoPage = () => {
+          window.open("https://hiskio.com/courses/286/about")
+        }
+        const gotoCourseListPage = () => {
+          window.open("https://v3.vuejs.org/guide/events.html#multiple-event-handlers")
+        }
+        return {
+          gotoInfoPage,
+          gotoCourseListPage,
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
