@@ -88,36 +88,77 @@
 
 <body>
   <div id="app">
+    <!-- todoWait -->
     <div class="wait">
       <ul>
-        <li v-for="(item, idx) in todoWait.content" :key="item.url">
+        <li v-for="(item, idx) in todoWait.content" :key="item.url" @click="handClick(item,idx)">
           <img :src="item.url">
         </li>
       </ul>
     </div>
 
+    <!-- todoOver -->
     <div class="carried">
       <ul>
-        <li>
-          <img src="">
+        <li v-for="(item, idx) in todoOver.content" :key="item.url" @click="resetClick(item, idx)">
+          <img :src="item.url">
         </li>
       </ul>
     </div>
-    <div class="winPage">
+    <div :class="['winPage',{open:isWin}]">
       <h1>闖關成功</h1>
     </div>
   </div>
   <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
   <script src="//unpkg.com/vue@next"></script>
   <script>
-    const { reactive, onMounted } = Vue
+    const { reactive, onMounted, watch, ref } = Vue
     const App = {
       setup() {
         // 初始化拼圖
         const todoWait = reactive({ content: [] })
         // 移動過去的拼圖
         const todoOver = reactive({ content: [] })
+        // 判斷順序值
+        const winIdx = ref(0)
+        const isWin = ref(false)
 
+        // 右移
+        const handClick = (item, idx) => {
+          todoOver.content.push(item)
+          todoWait.content.splice(idx, 1)
+        }
+
+        // 左移
+        const resetClick = (item, idx) => {
+          todoWait.content.push(item)
+          todoOver.content.splice(idx, 1)
+        }
+
+        // watch 判斷放入順序是否正確
+        watch(() => todoOver.content, (newArr) => {
+          winIdx.value = 0
+          // 因為正確順序剛好按照 0,1,2,3...排序所以這樣設定
+          newArr.forEach((item, idx) => {
+            if (item.idx === idx) {
+              winIdx.value++
+            }
+          })
+          console.log(winIdx.value)
+        },
+          // 監控值屬深層，需啟動深層監控
+          { deep: true }
+        )
+
+        // 全部正確 winIdx.value = 9
+        watch(winIdx, (newVal) => {
+          if (newVal === 9) {
+            console.log('you win')
+            isWin.value = true
+          }
+        })
+
+        // API
         onMounted(() => {
           axios.get('./api/puzzle.json').then(res => {
             console.log(res.data)
@@ -125,10 +166,12 @@
           })
         })
 
-
         return {
           todoWait,
-          todoOver
+          todoOver,
+          handClick,
+          resetClick,
+          isWin
         }
       }
     }
