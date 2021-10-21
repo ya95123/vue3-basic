@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Bindings</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>表格輸入的綁定 v-model</h2>
+
+    <div>
+      <span>帳號：</span>
+      <input v-model="email" type="email" placeholder="請輸入 email">
+    </div>
+    <div>
+      <span>密碼：</span>
+      <input v-model="psw" type="password" placeholder="請輸入密碼">
+    </div>
+    <div>
+      <input v-model="check" type="checkbox" id="check">
+      <label for="check">我已閱讀使用者條款</label>
+    </div>
+
+    <br>
+
+    <input @click="reset" type="button" value="重寫">
+    <input @click="login" type="button" value="登入">
+  </div>
+
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref } = Vue
+    const App = {
+      setup() {
+        const email = ref("")
+        const psw = ref("")
+        // checkbox 綁定後，會根據有無勾選產生 true/false
+        const check = ref(false)
+
+        const login = () => {
+          console.log(`email：${email.value}`)
+          console.log(`psw：${psw.value}`)
+          console.log(`check：${check.value}`)
+        }
+
+        const reset = () => {
+          email.value = ""
+          psw.value = ""
+          check.value = false
+        }
+
+        return {
+          email,
+          psw,
+          check,
+          login,
+          reset
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+  </script>
+</body>
+
+</html>
