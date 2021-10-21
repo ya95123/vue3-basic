@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>select</h2>
+    <select v-model="cityActive">
+      <option disabled value>請選擇縣市</option>
+      <option v-for="item in twZip.city" :key="item.name" :value="item.name">{{item.name}}</option>
+    </select>
+    <select v-model="areaActive">
+      <option disabled value>請選擇區域</option>
+      <option v-for="item in twZip.area" :key="item.name" :value="item.name">{{item.name}}</option>
+    </select>
+
+    <input @click="submit" type="button" value="送出">
+    <p>
+      選擇城市：{{cityActive}}<br>
+      選擇區域：{{areaActive}}<br>
+      區域編號：{{zipActive}}
+    </p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { onMounted, reactive, ref, watch } = Vue
+    const App = {
+      setup() {
+        // 從 api 資料處理貼過來
+        const twZip = reactive({ city: [], area: [] })
+        // 選擇的城市
+        const cityActive = ref("")
+        // 選擇的區域
+        const areaActive = ref("")
+        // 選擇的區域編號
+        const zipActive = ref("")
+
+        // 送出
+        const submit = () => {
+          console.log(cityActive.value, areaActive.value, zipActive.value);
+        }
+
+        // 監聽所選城市
+        watch(cityActive, (selectCity) => {
+          // 要記得先把 areaActive 清空，避免發生 bug
+          areaActive.value = ""
+
+          // 篩選出該城市的陣列
+          const selectCityArr = twZip.city.filter((city) => city.name === selectCity)
+
+          // 讓要給 html 的資料複製過去 v-for
+          twZip.area = selectCityArr[0].area
+
+          console.log(selectCity)
+          console.log(twZip.area)
+        })
+
+        // 監聽所選區域
+        watch(areaActive, (selectArea) => {
+          console.log(selectArea)
+
+          // 篩選出改區域的資料
+          const areaData = twZip.area.filter((area) => area.name === selectArea)
+          console.log(areaData)
+
+          // 讓區域號碼複製過去
+          zipActive.value = areaData[0].zip
+          console.log(zipActive.value)
+        })
+
+        // api
+        onMounted(() => {
+          axios.get("https://vue-lessons-api.herokuapp.com/city/list")
+            .then(res => {
+              console.log(res.data)
+              twZip.city = res.data.twzip.city
+              console.log(twZip.city)
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        })
+        return {
+          twZip,
+          cityActive,
+          areaActive,
+          zipActive,
+          submit,
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
