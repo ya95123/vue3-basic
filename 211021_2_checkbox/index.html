@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>checkbox</title>
+</head>
+
+<body>
+  <div id="app">
+    <p>checkbox 可以用布林值綁定，也可以用 Array 綁定會回傳被選取的項目值。</p>
+
+    <ul>
+      <ol v-for="item in courseslist.tags" :key="item.tag">
+        <!-- 要記得寫上 :value 才可以把選取的值送進 selection 裡 -->
+        <input type="checkbox" :id="item.tag" :value="item.tag" v-model="courseslist.selection">
+        <label :for="item.tag">{{item.tag}}</label>
+      </ol>
+
+      <br>
+      <input @click="submit" type="button" value="送出">
+    </ul>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { reactive } = Vue
+    const App = {
+      setup() {
+        const courseslist = reactive({
+          tags: [
+            { tag: "JavaScript" },
+            { tag: "Html" },
+            { tag: "Css" },
+            { tag: "Html5" },
+            { tag: "Vuejs" },
+            { tag: "React" },
+            { tag: "Sass" },
+            { tag: "Css3" },
+            { tag: "Canvas" },
+          ],
+          selection: []
+        })
+
+        const submit = () => {
+          console.log(courseslist.selection);
+        }
+
+        return {
+          courseslist,
+          submit
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
