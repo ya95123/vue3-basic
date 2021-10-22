@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registered</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/04-registered.css" />
+</head>
+
+<body>
+  <div id="app">
+    <div v-if="!isreg">
+      <div class="input-box">
+        <p>NAME</p>
+        <input type="text" placeholder="輸入使用者名稱" v-model="registered.username" />
+        <p v-if="error_message.username" class="error">{{error_message.username}}</p>
+      </div>
+
+      <div class="input-box">
+        <p>PASSWORD</p>
+        <input type="password" placeholder="輸入密碼" v-model="registered.password" />
+        <p v-if="error_message.password" class="error">{{error_message.password}}</p>
+      </div>
+
+      <div class="input-box">
+        <p>E-MAIL</p>
+        <input type="text" placeholder="輸入email" v-model="registered.email" />
+        <p v-if="error_message.email" class="error">{{error_message.email}}</p>
+      </div>
+
+      <div class="input-box">
+        <p>年齡</p>
+        <input type="number" placeholder="輸入年齡" v-model="registered.age" />
+      </div>
+
+      <div class="input-box">
+        <input type="radio" id="boy" value="boy" v-model="registered.sex" />
+        <label for="boy">boy</label>
+        <input type="radio" id="girl" value="girl" v-model="registered.sex" />
+        <label for="girl">girl</label>
+      </div>
+
+      <div class="input-box">
+        <input type="checkbox" id="checkbox" v-model="registered.terms" />
+        <label for="checkbox">我已閱讀使用者條款</label>
+      </div>
+
+      <a class="btn" @click="submit">送出</a>
+    </div>
+
+    <div v-if="isreg">
+      <h1>註冊成功</h1>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref, reactive } = Vue
+    const App = {
+      setup() {
+        // 是否註冊
+        const isreg = ref(false)
+        // 傳給後台資料
+        const registered = reactive({
+          username: "",
+          password: "",
+          sex: "",
+          email: "",
+          age: "",
+          terms: false,
+        })
+        // 報錯資訊紀錄
+        const error_message = reactive({})
+
+        // 處理報錯資訊
+        const handleError = (err) => {
+          // 清空 error_message
+          Object.keys(error_message).forEach((item) => {
+            error_message[item] = ""
+          })
+          console.log(error_message)
+
+          // object.keys() 會回傳"陣列"
+          console.log(Object.keys(err))
+
+          // 讓 error_message 與 報錯資訊 相等
+          Object.keys(err).forEach((error) => {
+            // !雖然兩者皆為 object，但透過 object.keys 還有下列寫法 ↓ err[error] 可以產生一樣的 key 與 value，可以把他認為自動綁定 err 的 key 再做值的處理
+            error_message[error] = err[error]
+            console.log(error)
+            console.log(error_message)
+          })
+        }
+
+        const submit = () => {
+          axios.post("https://vue-lessons-api.herokuapp.com/auth/registered", registered)
+            .then(res => {
+              isreg.value = true
+              console.log(res.data)
+            })
+            .catch(err => {
+              // err.response 可以看後端回傳的報錯資訊，也可以從 network 裡面看到！
+              console.error(err.response.data.error_message)
+              handleError(err.response.data.error_message)
+            })
+        }
+
+        return {
+          isreg,
+          registered,
+          submit,
+          error_message
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
