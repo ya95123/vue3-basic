@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v-model 統整練習</title>
+  <style>
+    body {
+      background: #433;
+      color: #fff;
+    }
+
+    div {
+      padding: 6px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h2>練習：報名表單</h2>
+    <div>
+      <label for="name">姓名：</label>
+      <input type="text" id="name" placeholder="請輸入姓名">
+    </div>
+
+    <div>
+      <label for="phone">手機：</label>
+      <input type="tel" id="phone" placeholder="請輸入手機號碼">
+    </div>
+
+    <div>
+      性別：
+      <input type="radio" name="gender" id="man" value="男">
+      <label for="man">男</label>
+      <input type="radio" name="gender" id="womon" value="女">
+      <label for="womon">女</label>
+    </div>
+
+    <div>
+      從哪裡得知些資訊？
+      <input type="checkbox" name="joinReason" id="friends">
+      <label for="friends">朋友邀請</label>
+      <input type="checkbox" name="joinReason" id="fb">
+      <label for="fb">FB</label>
+      <input type="checkbox" name="joinReason" id="ig">
+      <label for="ig">IG</label>
+    </div>
+
+    <div>
+      最有興趣的地方：
+      <select id="interested">
+        <option value="" disabled selected>請選擇</option>
+        <option value="認識朋友">認識朋友</option>
+        <!-- 練習 v-for 去跑 -->
+      </select>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { } = Vue
+    const App = {
+      setup() {
+        return {
+
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
