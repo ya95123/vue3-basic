@@ -69,14 +69,21 @@
 
         // 監聽所選區域
         watch(areaActive, (selectArea) => {
+
+          // 要記得先把 areaActive 清空，避免發生 bug
+          zipActive.value = ""
+
+          // 確保 area 還沒被選就做處理，會產生 undefined 的報錯
+          if (areaActive.value !== "") {
+            // 篩選出改區域的資料
+            const areaData = twZip.area.filter((area) => area.name === selectArea)
+            console.log(areaData)
+
+            // 讓區域號碼複製過去
+            zipActive.value = areaData[0].zip
+          }
+
           console.log(selectArea)
-
-          // 篩選出改區域的資料
-          const areaData = twZip.area.filter((area) => area.name === selectArea)
-          console.log(areaData)
-
-          // 讓區域號碼複製過去
-          zipActive.value = areaData[0].zip
           console.log(zipActive.value)
         })
 
