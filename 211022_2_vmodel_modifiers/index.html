@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v-model Modifieres 修飾符</title>
+  <link rel="stylesheet" href="./css/main.css" />
+  <style>
+    input {
+      height: 30px;
+      padding-left: 5px;
+    }
+
+    p {
+      color: #fff;
+    }
+
+    .input-box {
+      margin-bottom: 30px;
+      padding-left: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="input-box">
+      <!-- *v-model.lazy 當 dom 不備 focus 時才會執行 -->
+      <input type="text" placeholder="lazy" v-model.lazy="lazyVal" />
+      <p>{{lazyVal}}</p>
+    </div>
+    <div class="input-box">
+      <!-- *v-model.number 讓裡面的數字值，直接便成數字，不是字串 -->
+      <input type="text" placeholder="number" v-model.number="numberVal" />
+      <p>{{numberVal}}</p>
+    </div>
+    <div class="input-box">
+      <!-- *v-model.trim 去掉頭尾的空白格 -->
+      <input type="text" placeholder="trim" v-model.trim="trimVal" />
+      <p>{{trimVal}}</p>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { ref, watch } = Vue
+    const App = {
+      setup() {
+        const lazyVal = ref("")
+        const numberVal = ref("")
+        const trimVal = ref("")
+
+        watch(lazyVal, (newVal) => {
+          console.log(`lazy=>${newVal}`)
+        })
+
+        watch(numberVal, (newVal) => {
+          console.log(`number=>${newVal}`, newVal)
+        })
+
+        watch(trimVal, (newVal) => {
+          console.log(`trim=>${newVal}`)
+        })
+
+        return {
+          lazyVal,
+          numberVal,
+          trimVal
+        }
+      }
+    }
+    Vue.createApp(App).mount("#app")
+  </script>
+</body>
+
+</html>
