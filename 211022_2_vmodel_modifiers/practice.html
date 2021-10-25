@@ -24,11 +24,15 @@
     <div>
       <label for="name">姓名：</label>
       <input type="text" id="name" placeholder="請輸入姓名">
+      <!-- TODO 確認是否OK：lazy -->
+      <span></span>
     </div>
 
     <div>
       <label for="phone">手機：</label>
       <input type="tel" id="phone" placeholder="請輸入手機號碼">
+      <!-- TODO 確認是否OK：lazy、輸入轉為數字 number -->
+      <span></span>
     </div>
 
     <div>
@@ -37,6 +41,8 @@
       <label for="man">男</label>
       <input type="radio" name="gender" id="womon" value="女">
       <label for="womon">女</label>
+      <!-- TODO 確認是否OK 送出確認 -->
+      <span></span>
     </div>
 
     <div>
@@ -47,24 +53,87 @@
       <label for="fb">FB</label>
       <input type="checkbox" name="joinReason" id="ig">
       <label for="ig">IG</label>
+      <!-- TODO 確認是否OK 送出確認 -->
+      <span></span>
     </div>
 
     <div>
       最有興趣的地方：
       <select id="interested">
         <option value="" disabled selected>請選擇</option>
-        <option value="認識朋友">認識朋友</option>
-        <!-- 練習 v-for 去跑 -->
+        <option v-for="item in interested" :value="item">{{item}}</option>
+        <!-- TODO 確認是否OK 送出確認 -->
+        <span></span>
       </select>
     </div>
+
+    <div>
+      居住地：
+      <!-- *用 api 接 -->
+      <select id="city" v-model="city">
+        <option value="" disabled>請選擇</option>
+        <option v-for="item in places.city" :key="item.name" :value="item.name">{{item.name}}</option>
+        <!-- TODO 確認是否OK 送出確認 -->
+      </select>
+
+      <select id="area" v-model="area">
+        <option value="" disabled>請選擇</option>
+        <option v-for="item in places.area" :key="item.name" :value="item.name">{{item.name}}</option>
+
+        <!-- TODO 確認是否OK 送出確認 -->
+      </select>
+
+      <span></span>
+    </div>
+
+    <br>
+    <input type="button" value="清除">
+    <input type="button" value="送出">
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { } = Vue
+    const { ref, reactive, watch, onMounted } = Vue
     const App = {
       setup() {
-        return {
+        const interested = reactive(["有溫暖", "玩桌遊", "認識朋友", "聊天談心", "有相同興趣", "想更認識神"])
+        const places = reactive({ city: [], area: [] })
+        const city = ref("")
+        const area = ref("")
 
+        watch(city, (sleceted) => {
+          // 清空 area
+          area.value = ""
+
+          const areaData = places.city.filter((target) => target.name === sleceted)
+          places.area = areaData[0].area
+          console.log(sleceted)
+          console.log(areaData)
+        })
+
+        watch(area, (sleceted) => {
+          console.log(area.value)
+        })
+
+        // api
+        onMounted(() => {
+          axios.get("https://vue-lessons-api.herokuapp.com/city/list")
+            .then(res => {
+              console.log(res.data)
+              places.city = res.data.twzip.city
+              console.log(places)
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        })
+
+        return {
+          interested,
+          places,
+          city,
+          area
         }
       }
     }
